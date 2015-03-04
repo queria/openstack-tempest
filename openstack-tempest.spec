@@ -1,19 +1,45 @@
-Name:           openstack-tempest
-Version:        20141201
-Release:        1%{?dist}
+Name:           openstack-tempest-master
+Version:        2015.1.1
+Release:        2%{?dist}
 Summary:        OpenStack Integration Test Suite (Tempest)
 License:        ASL 2.0
 Url:            https://github.com/redhat-openstack/tempest
-Source0:        https://github.com/redhat-openstack/tempest/archive/openstack-tempest-icehouse-%{version}.tar.gz
-Source1:        https://github.com/redhat-openstack/tempest/archive/openstack-tempest-juno-%{version}.tar.gz
+Source0:        https://github.com/redhat-openstack/tempest/archive/master.tar.gz
 BuildArch:      noarch
 
-BuildRequires:  fdupes
-BuildRequires:  python-sphinx
-BuildRequires:  python-d2to1
-BuildRequires:  python-distribute
-BuildRequires:  python-pbr
-BuildRequires:  python2-devel
+
+%if 0%{?rhel} && 0%{?rhel} <= 5
+Requires(pre):  pwdutils
+%else
+Requires(pre):  shadow-utils
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 6
+Requires:       python
+%else
+Requires:       python >= 2.6.8
+%endif
+Requires:       python-anyjson
+Requires:       python-boto
+Requires:       python-cinderclient
+Requires:       python-fixtures
+Requires:       python-glanceclient
+Requires:       python-heatclient
+Requires:       python-iso8601
+Requires:       python-keystoneclient
+Requires:       python-lxml
+Requires:       python-netaddr
+Requires:       python-neutronclient
+Requires:       python-novaclient
+Requires:       python-oslo-config
+Requires:       python-paramiko
+Requires:       python-saharaclient
+Requires:       python-swiftclient
+Requires:       python-testrepository
+Requires:       python-testscenarios
+Requires:       python-testtools
+Requires:       python-tempest-lib
+Requires:       python-oslo-serialization
+
 
 %description
 This is a set of integration tests to be run against a live OpenStack cluster.
@@ -21,163 +47,63 @@ Tempest has batteries of tests for OpenStack API validation, Scenarios, and
 other specific tests useful in validating an OpenStack deployment.
 
 %prep
-%setup -q -D -a 0 -c -n tempest-%{name}-%{version}
-%setup -q -D -a 1 -c -n tempest-%{name}-%{version}
+%setup -q -D -a 0 -c -n %{name}-%{version}
 
-%install
-mkdir -p %{buildroot}%{_datarootdir}/%{name}-icehouse
-pushd tempest-openstack-tempest-icehouse-%{version}
-cp --preserve=mode -r . %{buildroot}%{_datarootdir}/%{name}-icehouse
-popd
-mkdir -p %{buildroot}%{_datarootdir}/%{name}-juno
-pushd tempest-openstack-tempest-juno-%{version}
-cp --preserve=mode -r . %{buildroot}%{_datarootdir}/%{name}-juno
-popd
+cd tempest-master
 
 %build
 
-%package icehouse
-Summary:        OpenStack Integration Test Suite (Tempest)
-%if 0%{?rhel} && 0%{?rhel} <= 5
-Requires(pre):  pwdutils
-%else
-Requires(pre):  shadow-utils
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 6
-Requires:       python
-%else
-Requires:       python >= 2.6.8
-%endif
-Requires:       python-anyjson
-Requires:       python-boto
-Requires:       python-cinderclient
-Requires:       python-fixtures
-Requires:       python-glanceclient
-Requires:       python-heatclient
-Requires:       python-ironicclient
-Requires:       python-iso8601
-Requires:       python-junitxml
-Requires:       python-keyring
-Requires:       python-keystoneclient
-Requires:       python-lxml
-Requires:       python-netaddr
-Requires:       python-neutronclient
-Requires:       python-nose
-Requires:       python-novaclient
-Requires:       python-oslo-config
-Requires:       python-paramiko
-Requires:       python-pbr
-Requires:       python-saharaclient
-Requires:       python-swiftclient
-Requires:       python-testrepository
-Requires:       python-testresources
-Requires:       python-testscenarios
-Requires:       python-testtools
-Requires:       which
+%install
+mkdir -p %{buildroot}%{_datarootdir}/%{name}
+pushd tempest-master
+cp --preserve=mode -r . %{buildroot}%{_datarootdir}/%{name}
+popd
 
-%description icehouse
-This is a set of integration tests to be run against a live OpenStack cluster.
-Tempest has batteries of tests for OpenStack API validation, Scenarios, and
-other specific tests useful in validating an OpenStack deployment.
-
-%files icehouse
-%doc tempest-openstack-tempest-icehouse-%{version}/LICENSE
+%files
+%doc tempest-master/LICENSE
 %defattr(-,root,root)
-%{_datarootdir}/%{name}-icehouse
-%exclude %{_datarootdir}/%{name}-icehouse/.gitignore
-%exclude %{_datarootdir}/%{name}-icehouse/.gitreview
-%exclude %{_datarootdir}/%{name}-icehouse/.mailmap
-%exclude %{_datarootdir}/%{name}-icehouse/.coveragerc
-
-
-%package juno
-Summary:        OpenStack Integration Test Suite (Tempest)
-%if 0%{?rhel} && 0%{?rhel} <= 5
-Requires(pre):  pwdutils
-%else
-Requires(pre):  shadow-utils
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 6
-Requires:       python
-%else
-Requires:       python >= 2.6.8
-%endif
-Requires:       python-anyjson
-Requires:       python-boto
-Requires:       python-cinderclient
-Requires:       python-fixtures
-Requires:       python-glanceclient
-Requires:       python-heatclient
-Requires:       python-ironicclient
-Requires:       python-iso8601
-Requires:       python-junitxml
-Requires:       python-keyring
-Requires:       python-keystoneclient
-Requires:       python-lxml
-Requires:       python-netaddr
-Requires:       python-neutronclient
-Requires:       python-nose
-Requires:       python-novaclient
-Requires:       python-oslo-config
-Requires:       python-paramiko
-Requires:       python-pbr
-Requires:       python-saharaclient
-Requires:       python-swiftclient
-Requires:       python-testrepository
-Requires:       python-testresources
-Requires:       python-testscenarios
-Requires:       python-testtools
-Requires:       which
-
-%description juno
-This is a set of integration tests to be run against a live OpenStack cluster.
-Tempest has batteries of tests for OpenStack API validation, Scenarios, and
-other specific tests useful in validating an OpenStack deployment.
-
-%files juno
-%doc tempest-openstack-tempest-juno-%{version}/LICENSE
-%defattr(-,root,root)
-%{_datarootdir}/%{name}-juno
-%exclude %{_datarootdir}/%{name}-juno/.gitignore
-%exclude %{_datarootdir}/%{name}-juno/.gitreview
-%exclude %{_datarootdir}/%{name}-juno/.mailmap
-%exclude %{_datarootdir}/%{name}-juno/.coveragerc
+%{_datarootdir}/%{name}
+%exclude %{_datarootdir}/%{name}/.gitignore
+%exclude %{_datarootdir}/%{name}/.gitreview
+%exclude %{_datarootdir}/%{name}/.mailmap
+%exclude %{_datarootdir}/%{name}/.coveragerc
 
 %changelog
-* Mon Dec 01 2014 Steve Linabery <slinaber@redhat.com> - 20141201-1
-- rebase to latest tag
+* Tue Mar 03 2015 rkanade@redhat.com 2015.1.1-2
+- Build from https://github.com/redhat-openstack/tempest 
 
-* Thu Nov 06 2014 Steve Linabery <slinaber@redhat.com> - 20141105-3
-- fix perms on  tools/configure-tempest-directory
+* Tue Jan 13 2015 rkanade@redhat.com 2015.1.1-1
+- Remove python-pbr dependency
 
-* Thu Nov 06 2014 Steve Linabery <slinaber@redhat.com> - 20141105-2
-- sync w/juno branch, patch tools/configure-tempest-directory
+* Wed Dec 24 2014 rkanade@redhat.com 2014.1.1-2
+- Updated the source from upstream Tempest (840eaf)
 
-* Wed Nov 05 2014 Steve Linabery <slinaber@redhat.com> - 20141105-1
-- rebase to latest tag
-- add juno subpackage
+* Mon Dec 15 2014 rkanade@redhat.com 2014.1.1-1
+- Updated the source from upstream Tempest (ab6106)
 
-* Mon Sep 15 2014 Steve Linabery <slinaber@redhat.com> - 20140915-2
-- add runtime dep on package which
+* Thu Dec 11 2014 rkanade@redhat.com 20141211git8779db-1
+- Updated the source from upstream Tempest (8779db)
 
-* Mon Sep 15 2014 Steve Linabery <slinaber@redhat.com> - 20140915-1
-- rebase to latest upstream tag
+* Mon Dec 01 2014 rkanade@redhat.com 20141201gitb2c0b4-1
+- Updated the source from upstream Tempest (b2c0b4)
 
-* Wed Aug 06 2014 Steve Linabery <slinaber@redhat.com> - 20140805-1
-- rebase to latest tag
-- use relative path to LICENSE
+* Tue Nov 25 2014 rkanade@redhat.com 20141125gitb4e5c1-1
+- Updated the source from upstream tempest (b4e5c1)
 
-* Tue Aug 05 2014 Steve Linabery <slinaber@redhat.com> - 20140703-4
-- keep .testr.conf
+* Mon Nov 24 2014 rkanade@redhat.com 20141124gite16846-1
+- Updated the source from upstream tempest (e16846)
 
-* Mon Aug 04 2014 Steve Linabery <slinaber@redhat.com> - 20140703-3
-- Move Requires into subpackage openstack-tempest-icehouse
+* Mon Nov 17 2014 rkanade@redhat.com 20141117gitd33793-1
+- Updated the source from upstream tempest (d33793)
 
-* Thu Jul 03 2014 Steve Linabery <slinaber@redhat.com> - 20140703-2
-- relax python version requirement for el6
+* Wed Oct 29 2014 rkanade@redhat.com 20141029git99a7bb-1
+- Updated the source from upstream tempest (99a7bb)
 
-* Thu Jul 03 2014 Steve Linabery <slinaber@redhat.com> - 20140703-1
-- rebase to latest tag
+* Wed Oct 01 2014 rkanade@redhat.com 20141001gitc81311-1
+- Updated the source from upstream tempest (c81311)
 
-* Wed Jun 25 2014 Steve Linabery <slinaber@redhat.com> - 20140625-1
-- Initial package.
+* Wed Sep 24 2014 Rohan Kanade <rkanade@redhat.com> 20140924gitd530b2-1
+- Updated the source from upstream tempest (d530b2).
+
+* Wed Aug 27 2014 Rohan Kanade <rkanade@redhat.com> - 20140827-1
+- Initial package pulled from upstream tempest (9c1ce58).
