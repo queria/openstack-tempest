@@ -1,11 +1,22 @@
-Name:           openstack-tempest-master
-Version:        2015.1.1
-Release:        2%{?dist}
+%global release_name master
+%global scm_tag master
+
+Name:           openstack-tempest-%{release_name}
+Version:        XXX
+Release:        XXX%{?dist}
 Summary:        OpenStack Integration Test Suite (Tempest)
 License:        ASL 2.0
 Url:            https://github.com/redhat-openstack/tempest
-Source0:        https://github.com/redhat-openstack/tempest/archive/master.tar.gz
+Source0:        https://github.com/redhat-openstack/tempest/archive/%{scm_tag}.tar.gz
 BuildArch:      noarch
+
+
+BuildRequires:  fdupes
+BuildRequires:  python-sphinx
+BuildRequires:  python-d2to1
+BuildRequires:  python-distribute
+BuildRequires:  python-pbr
+BuildRequires:  python2-devel
 
 
 %if 0%{?rhel} && 0%{?rhel} <= 5
@@ -24,19 +35,26 @@ Requires:       python-cinderclient
 Requires:       python-fixtures
 Requires:       python-glanceclient
 Requires:       python-heatclient
+Requires:       python-ironicclient
 Requires:       python-iso8601
+Requires:       python-junitxml
+Requires:       python-keyring
 Requires:       python-keystoneclient
 Requires:       python-lxml
 Requires:       python-netaddr
 Requires:       python-neutronclient
+Requires:       python-nose
 Requires:       python-novaclient
 Requires:       python-oslo-config
 Requires:       python-paramiko
+Requires:       python-pbr
 Requires:       python-saharaclient
 Requires:       python-swiftclient
 Requires:       python-testrepository
+Requires:       python-testresources
 Requires:       python-testscenarios
 Requires:       python-testtools
+Requires:       which
 Requires:       python-tempest-lib
 Requires:       python-oslo-serialization
 
@@ -47,20 +65,21 @@ Tempest has batteries of tests for OpenStack API validation, Scenarios, and
 other specific tests useful in validating an OpenStack deployment.
 
 %prep
-%setup -q -D -a 0 -c -n %{name}-%{version}
+%setup -q -D -a 0 -c -n %{scm_tag}
 
-cd tempest-master
+#cd tempest-%{scm_tag}
 
 %build
 
 %install
 mkdir -p %{buildroot}%{_datarootdir}/%{name}
-pushd tempest-master
+# FIXME: here and for docfiles, under delorean we need upstream_version while it should be scm_tag maybe?
+cd tempest-%{upstream_version}
 cp --preserve=mode -r . %{buildroot}%{_datarootdir}/%{name}
-popd
+cd ..
 
 %files
-%doc tempest-master/LICENSE
+%doc tempest-%{upstream_version}/LICENSE
 %defattr(-,root,root)
 %{_datarootdir}/%{name}
 %exclude %{_datarootdir}/%{name}/.gitignore
