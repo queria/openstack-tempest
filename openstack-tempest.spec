@@ -31,6 +31,7 @@ Requires:       python >= 2.6.8
 %endif
 Requires:       python-anyjson
 Requires:       python-boto
+Requires:       python-ceilometerclient
 Requires:       python-cinderclient
 Requires:       python-fixtures
 Requires:       python-glanceclient
